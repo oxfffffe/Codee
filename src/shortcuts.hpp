@@ -17,7 +17,7 @@ private:
   #define m_scalingCoefficient 8
 
 public:
-  Shortcuts(
+  explicit Shortcuts(
     QPlainTextEdit* parent,
     FileHandler* fileHandler,
     int* pFontSize,

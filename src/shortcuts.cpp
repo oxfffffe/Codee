@@ -9,7 +9,8 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
   QShortcut* saveFile;
   QShortcut* newFile;
   QShortcut* closeFile;
-  QShortcut* findText;
+  QShortcut* findWidget;
+  QShortcut* closeFindWidget;
 
   ZoomOut = new QShortcut(parent);
   ZoomOut->setKey(Qt::CTRL + Qt::Key_Minus);
@@ -61,13 +62,20 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
     fileHandler->closeFile(parent);
   });
 
-  findText = new QShortcut(parent);
-  findText->setKey(Qt::CTRL + Qt::Key_F);
-  connect(findText, &QShortcut::activated, [parent]() {
-    TextFinder* finder = new TextFinder(parent);
+  TextFinder* finder = new TextFinder(parent);
+
+  findWidget = new QShortcut(parent);
+  findWidget->setKey(Qt::CTRL + Qt::Key_F);
+  connect(findWidget, &QShortcut::activated, [finder]() {
     if (not finder->isVisible()) {
-      finder->initFindButton();
+      finder->init();
     }
+  });
+
+  closeFindWidget = new QShortcut(parent);
+  closeFindWidget->setKey(Qt::Key_Escape);
+  connect(closeFindWidget, &QShortcut::activated, [finder]() {
+    finder->close();
   });
 }
 

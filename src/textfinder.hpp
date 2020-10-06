@@ -14,10 +14,14 @@ class TextFinder : public QWidget
 {
 private:
   QPlainTextEdit* m_parent;
+  QWidget* findWindow = new QWidget(m_parent);
   mutable bool isClicked = false;
+
 public:
   TextFinder(QPlainTextEdit* parent);
-  void initFindButton();
+  void init();
+  void close();
+
 private slots:
   void remove(const QString& text);
   void replace(const QString& text, const QString& replaceWith);

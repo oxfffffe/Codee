@@ -97,6 +97,9 @@ void FileHandler::openFile()
 
 void FileHandler::openFile(const QString& fileName)
 {
+  isFileOpened = true;
+  currentFile = fileName;
+
   QFile file(fileName);
   if (not file.open(QIODevice::ReadOnly | QFile::Text))
   {
@@ -112,7 +115,6 @@ void FileHandler::openFile(const QString& fileName)
   QString fileContent = stream.readAll();
   plainTextEdit->setPlainText(fileContent);
   file.close();
-//  qDebug() << QFileInfo(file).suffix() << "\n";
   currentFileExtension = QFileInfo(file).suffix();
 }
 

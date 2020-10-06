@@ -12,6 +12,13 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
   settings->setSettings();
   setupShortcuts();
 
+  QCompleter* completer = new QCompleter(this);
+  completer->setModel(modelFromFile(":/resources/cppWordlist.txt"));
+  completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  completer->setWrapAround(false);
+  this->setCompleter(completer);
+
   connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect)));
   connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 }
@@ -131,12 +138,12 @@ void CodeEditor::setupMenuBar()
 
   ShortcutsWidget* shortcutsWidget = new ShortcutsWidget();
 
-  connect(saveFileAction,     &QAction::triggered, [=](){ fileHandler->saveFile();});
-  connect(openFileAction,     &QAction::triggered, [=](){ fileHandler->openFile(); });
-  connect(newFileAction,      &QAction::triggered, [=](){ fileHandler->newFile(); });
-  connect(exitAction,         &QAction::triggered, [=](){ fileHandler->closeFile(this); });
-  connect(fontAction,         &QAction::triggered, [=](){ this->setFont(QFontDialog::getFont(nullptr, this->font())); });
-  connect(shortcutsAction,    &QAction::triggered, [=](){ shortcutsWidget->show(); });
+  connect(openFileAction,   &QAction::triggered, [&](){ fileHandler->openFile(); });
+  connect(saveFileAction,   &QAction::triggered, [&](){ fileHandler->saveFile();});
+  connect(newFileAction,    &QAction::triggered, [&](){ fileHandler->newFile(); });
+  connect(exitAction,       &QAction::triggered, [&](){ fileHandler->closeFile(this); });
+  connect(fontAction,       &QAction::triggered, [&](){ this->setFont(QFontDialog::getFont(nullptr, this->font())); });
+  connect(shortcutsAction,  &QAction::triggered, [=](){ shortcutsWidget->show(); });
 }
 
 
@@ -178,22 +185,3 @@ CodeEditor::~CodeEditor()
   Settings* settings = new Settings(this);
   settings->getSettings();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

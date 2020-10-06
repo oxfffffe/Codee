@@ -12,7 +12,7 @@ private:
   CodeEditor *codeEditor;
 
 public:
-  LineNumering(CodeEditor *editor);
+  explicit LineNumering(CodeEditor *editor);
 
 protected:
   void paintEvent(QPaintEvent *event) override;

@@ -5,14 +5,18 @@ TextFinder::TextFinder(QPlainTextEdit* parent)
 { }
 
 
-void TextFinder::initFindButton()
+void TextFinder::close()
+{
+  findWindow->close();
+}
+
+void TextFinder::init()
 {
   const int widgetTopPadding = m_parent->height() - 125;
   const int widgetLeftPadding = m_parent->width() - (m_parent->width() - 150);
   const int widgetWidth = m_parent->width() - 175;
   const int widgetHeight = 100;
 
-  QWidget* findWindow = new QWidget(m_parent);
   findWindow->setStyleSheet("background-color:#202020;");
   findWindow->setGeometry(
     /*      x */ widgetLeftPadding,
@@ -54,10 +58,6 @@ void TextFinder::initFindButton()
   exitButton->setGeometry(findWindow->width() - 25, 0, 25, 25);
   exitButton->show();
   connect(exitButton, &QPushButton::clicked, [=](){ findWindow->close(); });
-
-  QShortcut* exitShortcut = new QShortcut(findWindow);
-  exitShortcut->setKey(Qt::Key_Escape);
-  connect(exitShortcut, &QShortcut::activated, [=](){ findWindow->close(); });
 }
 
 void TextFinder::remove(const QString& textToRemove)
@@ -76,7 +76,9 @@ void TextFinder::remove(const QString& textToRemove)
     QTextCursor highlightCursor(m_parent->document());
     while (not highlightCursor.isNull() && not highlightCursor.atEnd())
     {
-      highlightCursor = m_parent->document()->find(QRegExp(textToRemove), highlightCursor, QTextDocument::FindCaseSensitively);
+      highlightCursor = m_parent->document()->find(QRegExp(textToRemove),
+                                                   highlightCursor,
+                                                   QTextDocument::FindCaseSensitively);
       if (!highlightCursor.isNull())
       {
         found = true;
@@ -112,7 +114,9 @@ void TextFinder::replace(const QString& textToSearch, const QString& replaceWith
     QTextCursor highlightCursor(m_parent->document());
     while (not highlightCursor.isNull() && not highlightCursor.atEnd())
     {
-      highlightCursor = m_parent->document()->find(QRegExp(textToSearch), highlightCursor, QTextDocument::FindCaseSensitively);
+      highlightCursor = m_parent->document()->find(QRegExp(textToSearch),
+                                                   highlightCursor,
+                                                   QTextDocument::FindCaseSensitively);
       if (!highlightCursor.isNull())
       {
         found = true;

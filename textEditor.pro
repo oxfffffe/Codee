@@ -17,7 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     codeeditor.cpp \
-    cppHighlighter.cpp \
+    completer.cpp \
     filehandler.cpp \
     highlighter.cpp \
     linenumering.cpp \
@@ -43,3 +43,6 @@ FORMS +=
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    customcompleter.qrc

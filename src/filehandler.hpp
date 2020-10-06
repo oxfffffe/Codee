@@ -20,7 +20,7 @@ private:
   void newFileDialog();
 
 public:
-  FileHandler(QPlainTextEdit* parent)
+  explicit FileHandler(QPlainTextEdit* parent)
     : plainTextEdit(parent)
   { };
   QString whichFileOpened();

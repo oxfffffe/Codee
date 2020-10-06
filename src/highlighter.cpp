@@ -1,8 +1,7 @@
 #include "highlighter.hpp"
 
-Highlighter::Highlighter(QTextDocument *parent, QString extension)
+Highlighter::Highlighter(QTextDocument *parent)
   : QSyntaxHighlighter(parent)
-  , m_ext(extension)
 { }
 
 
@@ -29,13 +28,38 @@ void Highlighter::highlightBlock(const QString &text)
 
 void Highlighter::highlight()
 {
-  const QString mint("#73c882");
-  const QString gray("#353535");
-  const QString lightRed("#b44646");
-  const QString darkRed("#782828");
-  const QString purple("#aa50ff");
-  const QString orange("#e63c32");
+  HighlightingRule rule;
+  keywordFormat.setForeground(QColor(230, 60, 50));
 
-  CppHighlighter* cppHighlighter = new CppHighlighter(this->document(), darkRed, mint, gray, orange);
-  cppHighlighter->cppHighlight();
+  QFile keywords(":/resources/cppWordlist.txt");
+  if (not keywords.open(QFile::ReadOnly)) {
+    return;
+  }
+
+  while (not keywords.atEnd()) {
+    QByteArray line = keywords.readLine();
+    if (not line.isEmpty()) {
+      rule.pattern = QRegularExpression("\\b" + QString::fromUtf8(line.trimmed()) + "\\b");
+      rule.format = keywordFormat;
+      highlightingRules.append(rule);
+    }
+  }
+
+  QFile tokens(":/resources/cppTokens.txt");
+  if (not tokens.open(QFile::ReadOnly)) {
+    return;
+  }
+
+  const int color = 0;
+  const int pattern = 1;
+  while (not tokens.atEnd()) {
+    QByteArray line = tokens.readLine();
+    if (not line.isEmpty()) {
+      QList<QByteArray> l = line.trimmed().split(' ');
+      quotationFormat.setForeground(QColor(QString::fromUtf8(l[color].trimmed())));
+      rule.pattern = QRegularExpression(QString::fromUtf8(l[pattern].trimmed()));
+      rule.format = quotationFormat;
+      highlightingRules.append(rule);
+    }
+  }
 }

@@ -1,5 +1,33 @@
 #include "shortcutswidget.hpp"
 
+
+void ShortcutsWidget::drawCtrlKey(int x, int y)
+{
+  QLabel* ctrlLabel = new QLabel("Ctrl ", helpWidget);
+  ctrlLabel->setGeometry(x, y, 85, 35);
+  ctrlLabel->setStyleSheet(
+    "background-color:#151515;"
+    "color:white;"
+    "border-radius:5px;"
+    "padding-left:10px;"
+  );
+}
+
+
+void ShortcutsWidget::drawSymbol(int x, int y, const QString& symbol)
+{
+  QLabel* symbolLabel = new QLabel(symbol, helpWidget);
+  symbolLabel->setGeometry(x, y, 40, 35);
+  symbolLabel->setStyleSheet(
+    "background-color:#151515;"
+    "color:white;"
+    "border-radius:5px;"
+    "padding-left:10px;"
+  );
+
+}
+
+
 ShortcutsWidget::ShortcutsWidget()
 {
   helpWidget->resize(400, 400);
@@ -15,9 +43,8 @@ ShortcutsWidget::ShortcutsWidget()
     "padding-left:10px;"
     "font-size:25px;"
   );
-  helpLabel->show();
 
-  QLabel* shortcutOpenFile = new QLabel("Open file:", helpWidget);
+  QLabel* shortcutOpenFile = new QLabel("Open file", helpWidget);
   shortcutOpenFile->setGeometry(10, 70, 125, 35);
   shortcutOpenFile->setStyleSheet(
     "background-color:#202020;"
@@ -25,19 +52,12 @@ ShortcutsWidget::ShortcutsWidget()
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
 
-  QLabel* openFileSequence = new QLabel("Ctrl+O", helpWidget);
-  openFileSequence->setGeometry(175, 70, 125, 35);
-  openFileSequence->setStyleSheet(
-    "background-color:#202020;"
-    "color:white;"
-    "border-radius:5px;"
-    "padding-left:10px;"
-  );
-  shortcutOpenFile->show();
+  drawCtrlKey(150, 70);
 
-  QLabel* shortcutNewFile = new QLabel("New file:", helpWidget);
+  drawSymbol(240, 70, "O");
+
+  QLabel* shortcutNewFile = new QLabel("New file", helpWidget);
   shortcutNewFile->setGeometry(10, 110, 125, 35);
   shortcutNewFile->setStyleSheet(
     "background-color:#202020;"
@@ -45,19 +65,12 @@ ShortcutsWidget::ShortcutsWidget()
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
 
-  QLabel* newFileSequence = new QLabel("Ctrl+N", helpWidget);
-  newFileSequence->setGeometry(175, 110, 125, 35);
-  newFileSequence->setStyleSheet(
-    "background-color:#202020;"
-    "color:white;"
-    "border-radius:5px;"
-    "padding-left:10px;"
-  );
-  shortcutOpenFile->show();
+  drawCtrlKey(150, 110);
 
-  QLabel* shortcutSaveFile = new QLabel("Save file:", helpWidget);
+  drawSymbol(240,110, "N");
+
+  QLabel* shortcutSaveFile = new QLabel("Save file", helpWidget);
   shortcutSaveFile->setGeometry(10, 150, 125, 35);
   shortcutSaveFile->setStyleSheet(
     "background-color:#202020;"
@@ -65,37 +78,49 @@ ShortcutsWidget::ShortcutsWidget()
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
 
-  QLabel* saveFileSequence = new QLabel("Ctrl+S", helpWidget);
-  saveFileSequence->setGeometry(175, 150, 125, 35);
-  saveFileSequence->setStyleSheet(
+  drawCtrlKey(150, 150);
+
+  drawSymbol(240, 150, "S");
+
+  QLabel* shortcutTextFinder = new QLabel("Find Text", helpWidget);
+  shortcutTextFinder->setGeometry(10, 190, 125, 35);
+  shortcutTextFinder->setStyleSheet(
     "background-color:#202020;"
     "color:white;"
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
 
-  QLabel* shorotcutTextFinder = new QLabel("Find Text:", helpWidget);
-  shorotcutTextFinder->setGeometry(10, 190, 125, 35);
-  shorotcutTextFinder->setStyleSheet(
+  drawCtrlKey(150, 190);
+
+  drawSymbol(240, 190, "F");
+
+  QLabel* shortcutZoomIn = new QLabel("Zoom in", helpWidget);
+  shortcutZoomIn->setGeometry(10, 230, 125, 35);
+  shortcutZoomIn->setStyleSheet(
     "background-color:#202020;"
     "color:white;"
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
 
-  QLabel* findWidgetSequence = new QLabel("Ctrl+F", helpWidget);
-  findWidgetSequence->setGeometry(175, 190, 125, 35);
-  findWidgetSequence->setStyleSheet(
+  drawCtrlKey(150, 230);
+
+  drawSymbol(240, 230, "+");
+
+  QLabel* shortcutZoomOut = new QLabel("Zoom out", helpWidget);
+  shortcutZoomOut->setGeometry(10, 270, 125, 35);
+  shortcutZoomOut->setStyleSheet(
     "background-color:#202020;"
     "color:white;"
     "border-radius:5px;"
     "padding-left:10px;"
   );
-  shortcutOpenFile->show();
+
+  drawCtrlKey(150, 270);
+
+  drawSymbol(240, 270, "-");
 }
 
 
