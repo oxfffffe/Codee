@@ -2,11 +2,9 @@
 #define SHORTCUTS_HPP
 
 #include <QShortcut>
-#include <QAction>
-#include <QWheelEvent>
 #include <QPushButton>
 #include <QLineEdit>
-#include "filehandler.hpp" //QPlainTextEdit
+#include "filehandler.hpp"
 #include "textfinder.hpp"
 
 

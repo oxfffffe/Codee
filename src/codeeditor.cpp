@@ -8,16 +8,10 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
   setupFont("Source Code Pro");
   setupStyleSheets();
   setupMenuBar();
+  setupShortcuts();
+  setupCompleter();
   Settings* settings = new Settings(this);
   settings->setSettings();
-  setupShortcuts();
-
-  QCompleter* completer = new QCompleter(this);
-  completer->setModel(modelFromFile(":/resources/cppWordlist.txt"));
-  completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-  completer->setCaseSensitivity(Qt::CaseInsensitive);
-  completer->setWrapAround(false);
-  this->setCompleter(completer);
 
   connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect)));
   connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
@@ -111,24 +105,24 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 void CodeEditor::setupMenuBar()
 {
-  QMenuBar* menu = new QMenuBar(this);
+  QMenuBar* menu            = new QMenuBar(this);
 
-  QMenu* fileMenu = new QMenu("File");
-  QAction* openFileAction     = new QAction("Open");
-  QAction* saveFileAction     = new QAction("Save");
-  QAction* newFileAction      = new QAction("New");
-  QAction* exitAction         = new QAction("Exit");
+  QMenu* fileMenu           = new QMenu("File");
+  QAction* openFileAction   = new QAction("Open");
+  QAction* saveFileAction   = new QAction("Save");
+  QAction* newFileAction    = new QAction("New");
+  QAction* exitAction       = new QAction("Exit");
   fileMenu->addAction(openFileAction);
   fileMenu->addAction(saveFileAction);
   fileMenu->addAction(newFileAction);
   fileMenu->addAction(exitAction);
 
-  QMenu* viewMenu             = new QMenu("View");
-  QAction* fontAction         = new QAction("Font");
+  QMenu* viewMenu           = new QMenu("View");
+  QAction* fontAction       = new QAction("Font");
   viewMenu->addAction(fontAction);
 
-  QMenu* helpMenu             = new QMenu("Help");
-  QAction* shortcutsAction    = new QAction("Shortcuts");
+  QMenu* helpMenu           = new QMenu("Help");
+  QAction* shortcutsAction  = new QAction("Shortcuts");
   helpMenu->addAction(shortcutsAction);
 
   menu->addMenu(fileMenu);
@@ -177,6 +171,17 @@ void CodeEditor::updateFont()
 {
   QFontMetrics metrics(font());
   this->setTabStopWidth(m_tabSize * metrics.horizontalAdvance('0'));
+}
+
+
+void CodeEditor::setupCompleter()
+{
+  QCompleter* completer = new QCompleter(this);
+  completer->setModel(modelFromFile(":/resources/cppKeywords.txt"));
+  completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  completer->setWrapAround(false);
+  this->setCompleter(completer);
 }
 
 

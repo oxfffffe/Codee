@@ -64,6 +64,7 @@ private:
   void setupFont(const QString&&);
   void setupMenuBar();
   void setupShortcuts();
+  void setupCompleter();
   void updateFont();
 
 };

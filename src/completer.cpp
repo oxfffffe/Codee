@@ -60,10 +60,9 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
       default:
         break;
     }
-  } std::string a;
-  a.shrink_to_fit();
+  }
 
-  const bool isShortcut = (event->modifiers().testFlag(Qt::ControlModifier) &&
+  const bool isShortcut = (event->modifiers().testFlag(Qt::ControlModifier) and
                            event->key() == Qt::Key_E);
 
   if (not _completer or not isShortcut) {
@@ -71,19 +70,17 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
   }
 
   const bool ctrlOrShift =
-      event->modifiers().testFlag(Qt::ControlModifier) ||
+      event->modifiers().testFlag(Qt::ControlModifier) or
       event->modifiers().testFlag(Qt::ShiftModifier);
 
-  static QString eow("~!@$%^&*+(){}[]|:\"<>?,./;'\\-=");
+  static QString eow("~!@$%^&*+|:\"?,./;'\\-=");
 
   const bool hasModifier = (event->modifiers() != Qt::NoModifier) and not ctrlOrShift;
   QString completionPrefix = textUnderCursor();
-
   if (not isShortcut and
      (hasModifier or
       event->text().isEmpty() or
-      completionPrefix.length() < 3 or
-      eow.contains(event->text().right(1))))
+      completionPrefix.length() < 3))
   {
     _completer->popup()->hide();
     return;
@@ -105,7 +102,11 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
          _completer->popup()->sizeHintForColumn(0) +
          m_scaling)
   );
-  cr.setHeight(_completer->popup()->verticalScrollBar()->sizeHint().height() + m_fontSize);
+  cr.setHeight(_completer->
+               popup()->
+               verticalScrollBar()->
+               sizeHint().height() +
+               m_fontSize);
   _completer->complete(cr);
 }
 

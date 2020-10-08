@@ -76,8 +76,7 @@ void FileHandler::openFileDialog()
   }
 
   QTextStream stream(&file);
-  QString fileContent = stream.readAll();
-  plainTextEdit->setPlainText(fileContent);
+  plainTextEdit->setPlainText(stream.readAll());
   file.close();
 }
 
@@ -112,8 +111,7 @@ void FileHandler::openFile(const QString& fileName)
   }
 
   QTextStream stream(&file);
-  QString fileContent = stream.readAll();
-  plainTextEdit->setPlainText(fileContent);
+  plainTextEdit->setPlainText(stream.readAll());
   file.close();
   currentFileExtension = QFileInfo(file).suffix();
 }
@@ -147,7 +145,6 @@ void FileHandler::newFileDialog()
   }
 
   QTextStream stream(&file);
-  QString text = plainTextEdit->toPlainText();
   stream << plainTextEdit->toPlainText();
   file.close();
 }

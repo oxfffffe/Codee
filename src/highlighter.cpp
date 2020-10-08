@@ -5,15 +5,6 @@ Highlighter::Highlighter(QTextDocument *parent)
 { }
 
 
-void Highlighter::HighlightLexeme(HighlightingRule rule, QColor color, QString regexp)
-{
-  quotationFormat.setForeground(color);
-  rule.pattern = QRegularExpression(QString(regexp));
-  rule.format = quotationFormat;
-  highlightingRules.append(rule);
-}
-
-
 void Highlighter::highlightBlock(const QString &text)
 {
   for (const HighlightingRule &rule : qAsConst(highlightingRules)) {
@@ -31,7 +22,7 @@ void Highlighter::highlight()
   HighlightingRule rule;
   keywordFormat.setForeground(QColor(230, 60, 50));
 
-  QFile keywords(":/resources/cppWordlist.txt");
+  QFile keywords(":/resources/cppKeywords.txt");
   if (not keywords.open(QFile::ReadOnly)) {
     return;
   }
@@ -50,14 +41,14 @@ void Highlighter::highlight()
     return;
   }
 
-  const int color = 0;
+  const int color   = 0;
   const int pattern = 1;
   while (not tokens.atEnd()) {
     QByteArray line = tokens.readLine();
     if (not line.isEmpty()) {
-      QList<QByteArray> l = line.trimmed().split(' ');
-      quotationFormat.setForeground(QColor(QString::fromUtf8(l[color].trimmed())));
-      rule.pattern = QRegularExpression(QString::fromUtf8(l[pattern].trimmed()));
+      QList<QByteArray> token = line.trimmed().split(' ');
+      quotationFormat.setForeground(QColor(QString::fromUtf8(token[color].trimmed())));
+      rule.pattern = QRegularExpression(QString::fromUtf8(token[pattern].trimmed()));
       rule.format = quotationFormat;
       highlightingRules.append(rule);
     }

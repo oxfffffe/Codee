@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/cppWordlist.txt</file>
+        <file>resources/cppKeywords.txt</file>
         <file>resources/cppTokens.txt</file>
     </qresource>
 </RCC>

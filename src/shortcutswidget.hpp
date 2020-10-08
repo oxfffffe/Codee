@@ -14,7 +14,8 @@ public:
 
 private:
   void drawCtrlKey(int x, int y);
-  void drawSymbol(int x, int y, const QString&);
+  void drawSymbol(int x, int y, const QString& symbol);
+  void drawDescription(int x, int y, int w, int h, const QString& description);
 
 private slots:
   void paintEvent(QPaintEvent*) override;

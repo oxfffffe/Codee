@@ -17,10 +17,9 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
 
   connect(ZoomOut,  &QShortcut::activated,[=]() {
     int tempSize = *pFontSize;
-    if (tempSize != 0) {
+    if (tempSize-- != 0) {
       parent->zoomOut(2);
       --(*pFontSize);
-      --tempSize;
       *pScaling -= m_scalingCoefficient;
     }
   });
@@ -67,9 +66,7 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
   findWidget = new QShortcut(parent);
   findWidget->setKey(Qt::CTRL + Qt::Key_F);
   connect(findWidget, &QShortcut::activated, [finder]() {
-    if (not finder->isVisible()) {
-      finder->init();
-    }
+    finder->init();
   });
 
   closeFindWidget = new QShortcut(parent);
