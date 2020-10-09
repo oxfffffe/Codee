@@ -1,7 +1,7 @@
 #include "shortcuts.hpp"
-#include <QDebug>
+# include "codeeditor.hpp"
 
-Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFontSize, int* pScaling)
+Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSize, int* pScaling)
 {
   QShortcut* ZoomOut;
   QShortcut* ZoomIn;
@@ -11,6 +11,7 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
   QShortcut* closeFile;
   QShortcut* findWidget;
   QShortcut* closeFindWidget;
+  TextFinder* finder = new TextFinder(parent);
 
   ZoomOut = new QShortcut(parent);
   ZoomOut->setKey(Qt::CTRL + Qt::Key_Minus);
@@ -37,6 +38,9 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
   openFile->setKey(Qt::CTRL + Qt::Key_O);
 
   connect(openFile, &QShortcut::activated, [=]() {
+    parent->highlighter->dehighlight();
+    parent->m_extension = fileHandler->fileExtension();
+    parent->highlighter->highlight(parent->m_extension);
     fileHandler->openFile();
   });
 
@@ -45,6 +49,9 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
 
   connect(saveFile, &QShortcut::activated, [=]() {
     fileHandler->saveFile();
+    parent->highlighter->dehighlight();
+    parent->m_extension = fileHandler->fileExtension();
+    parent->highlighter->highlight(parent->m_extension);
   });
 
   newFile = new QShortcut(parent);
@@ -52,16 +59,19 @@ Shortcuts::Shortcuts(QPlainTextEdit* parent, FileHandler* fileHandler, int* pFon
 
   connect(newFile, &QShortcut::activated, [=]() {
     fileHandler->newFile();
+    parent->highlighter->dehighlight();
+    parent->m_extension = fileHandler->fileExtension();
+    parent->highlighter->highlight(parent->m_extension);
   });
 
   closeFile = new QShortcut(parent);
   closeFile->setKey(Qt::CTRL + Qt::Key_Q);
 
   connect(closeFile, &QShortcut::activated, [=]() {
-    fileHandler->closeFile(parent);
+    fileHandler->closeFile();
+    parent->m_extension = "";
+    parent->close();
   });
-
-  TextFinder* finder = new TextFinder(parent);
 
   findWidget = new QShortcut(parent);
   findWidget->setKey(Qt::CTRL + Qt::Key_F);

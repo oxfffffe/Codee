@@ -7,16 +7,17 @@
 #include "filehandler.hpp"
 #include "textfinder.hpp"
 
+class CodeEditor;
 
 class Shortcuts : public QObject
 {
   Q_OBJECT
 private:
-  #define m_scalingCoefficient 8
+  const int m_scalingCoefficient = 8;
 
 public:
   explicit Shortcuts(
-    QPlainTextEdit* parent,
+    CodeEditor* parent,
     FileHandler* fileHandler,
     int* pFontSize,
     int* pScaling

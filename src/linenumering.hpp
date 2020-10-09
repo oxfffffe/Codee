@@ -9,13 +9,13 @@ class CodeEditor;
 class LineNumering : public QWidget
 {
 private:
-  CodeEditor *codeEditor;
+  CodeEditor* codeEditor;
 
 public:
-  explicit LineNumering(CodeEditor *editor);
+  explicit LineNumering(CodeEditor* editor);
 
 protected:
-  void paintEvent(QPaintEvent *event) override;
+  void paintEvent(QPaintEvent* event) override;
 };
 
 #endif // LINENUMERING_HPP

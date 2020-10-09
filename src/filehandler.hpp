@@ -5,23 +5,24 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QPlainTextEdit>
+#include <QDebug>
 
 
 class FileHandler : public QWidget
 {
   Q_OBJECT
 private:
-  QPlainTextEdit* plainTextEdit;
-  QString currentFile;
-  QString currentFileExtension;
-  bool isFileOpened = false;
-  void showSavingMessageBox();
-  void openFileDialog();
-  void newFileDialog();
+  QPlainTextEdit* m_plainTextEdit;
+  QString m_currentFileName;
+  QString m_currentFileExtension;
+  bool m_isFileOpened = false;
+  void _showSavingMessageBox();
+  void _openFileDialog();
+  void _newFileDialog();
 
 public:
   explicit FileHandler(QPlainTextEdit* parent)
-    : plainTextEdit(parent)
+    : m_plainTextEdit(parent)
   { };
   QString whichFileOpened();
   QString fileExtension();
@@ -31,7 +32,7 @@ public slots:
   void openFile();
   void openFile(const QString& fileName);
   void newFile();
-  void closeFile(QWidget*);
+  void closeFile();
 };
 
 #endif // FILEHANDLER_HPP

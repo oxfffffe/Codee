@@ -59,7 +59,7 @@ void TextFinder::init()
   m_deleteButton->show();
   connect(m_deleteButton, &QPushButton::clicked, [=](){
     m_foundedText = m_findField->text();
-    textHandle(DELETE_STATE);
+    _textHandle(DELETE_STATE);
   });
 
   m_replaceButton = new QPushButton("Replace all", m_findWindow);
@@ -69,7 +69,7 @@ void TextFinder::init()
   connect(m_replaceButton, &QPushButton::clicked, [=](){
     m_foundedText = m_findField->text();
     m_textToReplace = m_replaceField->text();
-    textHandle(REPLACE_STATE);
+    _textHandle(REPLACE_STATE);
   });
 
   m_exitButton = new QPushButton("x", m_findWindow);
@@ -79,7 +79,7 @@ void TextFinder::init()
 }
 
 
-void TextFinder::textHandle(bool isReplaceState) {
+void TextFinder::_textHandle(bool isReplaceState) {
   bool found = false;
   if (m_foundedText.isEmpty()) {
     QMessageBox::information(

@@ -4,14 +4,14 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
   lineNumering = new LineNumering(this);
 
+  Settings* settings = new Settings(this);
+  settings->setSettings();
+  qDebug() << "inside constructor m_extension: " << m_extension;
   setupHighlighter();
   setupFont("Source Code Pro");
   setupStyleSheets();
   setupMenuBar();
-  setupShortcuts();
   setupCompleter();
-  Settings* settings = new Settings(this);
-  settings->setSettings();
 
   connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect)));
   connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
@@ -26,8 +26,7 @@ void CodeEditor::updateLineNumberArea(const QRect& rect)
     /* aW */ lineNumering->width(),
     /* aH */ rect.height());
 
-  if (rect.contains(viewport()->rect()))
-  {
+  if (rect.contains(viewport()->rect())) {
     setViewportMargins(
       /*   left */ m_lineWidgetIndent + m_scaling,
       /*    top */ m_menuBarHeight,
@@ -77,10 +76,8 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
   int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
   int bottom = top + (int) blockBoundingRect(block).height();
 
-  while (block.isValid() and top <= event->rect().bottom())
-  {
-    if (block.isVisible() and bottom >= event->rect().top())
-    {
+  while (block.isValid() and top <= event->rect().bottom()) {
+    if (block.isVisible() and bottom >= event->rect().top()) {
       QString number = QString::number(blockNumber);
       painter.setPen(Qt::gray);
 
@@ -97,8 +94,8 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
     block = block.next();
     top = bottom;
-    bottom = top + (int) blockBoundingRect(block).height();
     ++blockNumber;
+    bottom = top + (int) blockBoundingRect(block).height();
   }
 }
 
@@ -112,10 +109,12 @@ void CodeEditor::setupMenuBar()
   QAction* saveFileAction   = new QAction("Save");
   QAction* newFileAction    = new QAction("New");
   QAction* exitAction       = new QAction("Exit");
+  QAction* closeFileAction  = new QAction("Close File");
   fileMenu->addAction(openFileAction);
   fileMenu->addAction(saveFileAction);
   fileMenu->addAction(newFileAction);
   fileMenu->addAction(exitAction);
+  fileMenu->addAction(closeFileAction);
 
   QMenu* viewMenu           = new QMenu("View");
   QAction* fontAction       = new QAction("Font");
@@ -132,31 +131,58 @@ void CodeEditor::setupMenuBar()
 
   ShortcutsWidget* shortcutsWidget = new ShortcutsWidget();
 
-  connect(openFileAction,   &QAction::triggered, [&](){ fileHandler->openFile(); });
-  connect(saveFileAction,   &QAction::triggered, [&](){ fileHandler->saveFile();});
-  connect(newFileAction,    &QAction::triggered, [&](){ fileHandler->newFile(); });
-  connect(exitAction,       &QAction::triggered, [&](){ fileHandler->closeFile(this); });
-  connect(fontAction,       &QAction::triggered, [&](){ this->setFont(QFontDialog::getFont(nullptr, this->font())); });
-  connect(shortcutsAction,  &QAction::triggered, [=](){ shortcutsWidget->show(); });
+  connect(openFileAction,  &QAction::triggered, [&](){
+    highlighter->dehighlight();
+    m_extension = fileHandler->fileExtension();
+    highlighter->highlight(m_extension);
+    fileHandler->openFile();
+  });
+
+  connect(saveFileAction,  &QAction::triggered, [&](){
+    fileHandler->saveFile();
+    highlighter->dehighlight();
+    m_extension = fileHandler->fileExtension();
+    highlighter->highlight(m_extension);
+  });
+
+  connect(newFileAction,   &QAction::triggered, [&](){
+    fileHandler->newFile();
+    highlighter->dehighlight();
+    m_extension = fileHandler->fileExtension();
+    highlighter->highlight(m_extension);
+  });
+
+  connect(exitAction,      &QAction::triggered, [&](){
+    fileHandler->closeFile();
+    m_extension = "";
+    this->close();
+  });
+
+  connect(closeFileAction, &QAction::triggered, [&](){
+    fileHandler->closeFile();
+    m_extension = "";
+  });
+
+  connect(fontAction,       &QAction::triggered, [&](){
+    this->setFont(QFontDialog::getFont(nullptr, this->font()));
+
+  });
+  connect(shortcutsAction,  &QAction::triggered, [=](){
+    shortcutsWidget->show();
+  });
 }
 
 
 void CodeEditor::setupHighlighter()
 {
-  highlighter->highlight();
-}
-
-
-void CodeEditor::setupShortcuts()
-{
-  Shortcuts shortcuts(this, fileHandler, &m_fontSize, &m_scaling);
+  qDebug() << "inside setupHighlighter m_extension:" << m_extension;
+  highlighter->highlight(m_extension);
 }
 
 
 void CodeEditor::setupFont(const QString&& fontToSetup)
 {
-  QFont font(fontToSetup, 15);
-  this->setFont(font);
+  this->setFont(QFont(fontToSetup, 15));
 }
 
 

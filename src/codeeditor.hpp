@@ -2,10 +2,6 @@
 #define CODEEDITOR_H
 
 #include <QMenuBar>
-#include <QPainter>
-#include <QStatusBar>
-#include <QLabel>
-#include <QColor>
 #include <QFontDialog>
 #include <QCompleter>
 #include <QAbstractItemView>
@@ -44,6 +40,8 @@ private slots:
 
 private:
   friend class Settings;
+  friend class Shortcuts;
+
   const int m_lineWidgetIndent = 125;
   const int m_lineNumbersIndent = 25;
   const int m_menuBarHeight = 30;
@@ -52,20 +50,21 @@ private:
         int m_scaling = 0;
   QString whichFileOpened;
   QString m_extension;
-  LineNumering* lineNumering;
-  FileHandler* fileHandler = new FileHandler(this);
-  Highlighter* highlighter = new Highlighter(this->document());
-  Settings* settings;
+
   QString textUnderCursor() const;
-  QCompleter *_completer = nullptr;
   QAbstractItemModel* modelFromFile(const QString& fileName);
   void setupHighlighter();
   void setupStyleSheets();
   void setupFont(const QString&&);
   void setupMenuBar();
-  void setupShortcuts();
   void setupCompleter();
   void updateFont();
+
+  LineNumering* lineNumering;
+  FileHandler* fileHandler = new FileHandler(this);
+  Highlighter* highlighter = new Highlighter(this->document());
+  QCompleter *_completer = nullptr;
+  Shortcuts* shortcuts = new Shortcuts(this, fileHandler, &m_fontSize, &m_scaling);
 
 };
 

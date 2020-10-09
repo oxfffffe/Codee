@@ -7,10 +7,14 @@
 
 class Highlighter : public QSyntaxHighlighter
 {
+private:
+  void handleMultilineComment(const QString &text);
+  QString m_ext = "";
 public:
   explicit Highlighter(QTextDocument* parent = 0);
   void highlightBlock(const QString& text) override;
-  void highlight();
+  void highlight(const QString& ext);
+  void dehighlight();
 
   struct HighlightingRule {
     QRegularExpression pattern;
@@ -19,6 +23,7 @@ public:
   QVector<HighlightingRule> highlightingRules;
   QTextCharFormat keywordFormat;
   QTextCharFormat quotationFormat;
+  QTextCharFormat multiLineCommentFormat;
 };
 
 #endif // HIGHLIGHTER_HPP

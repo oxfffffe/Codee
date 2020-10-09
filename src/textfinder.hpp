@@ -34,7 +34,7 @@ public:
   void close();
 
 private slots:
-  void textHandle(bool isReplaceState);
+  void _textHandle(bool isReplaceState);
 };
 
 #endif // TEXTFINDER_HPP

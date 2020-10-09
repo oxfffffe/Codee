@@ -27,20 +27,20 @@ void CodeEditor::insertCompletion(const QString &completion)
     return;
   }
 
-  QTextCursor tc = textCursor();
-  int extra = completion.length() - _completer->completionPrefix().length();
-  tc.movePosition(QTextCursor::Left);
-  tc.movePosition(QTextCursor::EndOfWord);
-  tc.insertText(completion.right(extra));
-  setTextCursor(tc);
+  QTextCursor cursor = textCursor();
+  int rest = completion.length() - _completer->completionPrefix().length();
+  cursor.movePosition(QTextCursor::Left);
+  cursor.movePosition(QTextCursor::EndOfWord);
+  cursor.insertText(completion.right(rest));
+  setTextCursor(cursor);
 }
 
 
 QString CodeEditor::textUnderCursor() const
 {
-  QTextCursor tc = textCursor();
-  tc.select(QTextCursor::WordUnderCursor);
-  return tc.selectedText();
+  QTextCursor cursor = textCursor();
+  cursor.select(QTextCursor::WordUnderCursor);
+  return cursor.selectedText();
 }
 
 

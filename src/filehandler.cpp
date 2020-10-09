@@ -1,12 +1,11 @@
 #include "filehandler.hpp"
-#include <QDebug>
 
 
 void FileHandler::saveFile()
 {
-  if (not plainTextEdit->toPlainText().isEmpty())
+  if (not m_plainTextEdit->toPlainText().isEmpty())
   {
-    if (not isFileOpened) {
+    if (not m_isFileOpened) {
       QString fileName = QFileDialog::getSaveFileName(
         this, tr("Save file"), "",
         tr("All files(*);;"
@@ -20,9 +19,9 @@ void FileHandler::saveFile()
       );
 
       QFile file(fileName);
+      m_currentFileExtension = QFileInfo(file).suffix();
 
-      if (not file.open(QFile::WriteOnly | QFile::Text))
-      {
+      if (not file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(
           this,
           "Warning",
@@ -32,15 +31,15 @@ void FileHandler::saveFile()
       }
 
       QTextStream stream(&file);
-      stream << plainTextEdit->toPlainText();
+      stream << m_plainTextEdit->toPlainText();
       file.close();
     }
 
-    if (isFileOpened) {
-      QFile file(currentFile);
+    if (m_isFileOpened) {
+      QFile file(m_currentFileName);
       if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream stream(&file);
-        stream << plainTextEdit->toPlainText();
+        stream << m_plainTextEdit->toPlainText();
       }
       file.close();
     }
@@ -48,7 +47,7 @@ void FileHandler::saveFile()
 }
 
 
-void FileHandler::openFileDialog()
+void FileHandler::_openFileDialog()
 {
   QString fileName = QFileDialog::getOpenFileName(
     this, tr("Open file"), "",
@@ -62,11 +61,11 @@ void FileHandler::openFileDialog()
     )
   );
 
-  currentFile = fileName;
-  isFileOpened = true;
+  m_currentFileName = fileName;
+  m_isFileOpened = true;
   QFile file(fileName);
-  if (not file.open(QIODevice::ReadOnly | QFile::Text))
-  {
+  m_currentFileExtension = QFileInfo(file).suffix();
+  if (not file.open(QIODevice::ReadOnly | QFile::Text)) {
     QMessageBox::warning(
       this,
       "Warning",
@@ -76,32 +75,31 @@ void FileHandler::openFileDialog()
   }
 
   QTextStream stream(&file);
-  plainTextEdit->setPlainText(stream.readAll());
+  m_plainTextEdit->setPlainText(stream.readAll());
   file.close();
 }
 
 
 void FileHandler::openFile()
 {
-  if (not plainTextEdit->toPlainText().isEmpty())
-  {
-    showSavingMessageBox();
-    openFileDialog();
+  if (not m_plainTextEdit->toPlainText().isEmpty()) {
+    _showSavingMessageBox();
+    _openFileDialog();
   } else {
-    openFileDialog();
+    _openFileDialog();
   }
-  isFileOpened = true;
+  m_isFileOpened = true;
 }
 
 
 void FileHandler::openFile(const QString& fileName)
 {
-  isFileOpened = true;
-  currentFile = fileName;
+  m_isFileOpened = true;
+  m_currentFileName = fileName;
 
   QFile file(fileName);
-  if (not file.open(QIODevice::ReadOnly | QFile::Text))
-  {
+  m_currentFileExtension = QFileInfo(file).suffix();
+  if (not file.open(QIODevice::ReadOnly | QFile::Text)) {
     QMessageBox::warning(
       this,
       "Warning",
@@ -111,13 +109,13 @@ void FileHandler::openFile(const QString& fileName)
   }
 
   QTextStream stream(&file);
-  plainTextEdit->setPlainText(stream.readAll());
+  m_plainTextEdit->setPlainText(stream.readAll());
   file.close();
-  currentFileExtension = QFileInfo(file).suffix();
+  m_currentFileExtension = QFileInfo(file).suffix();
 }
 
 
-void FileHandler::newFileDialog()
+void FileHandler::_newFileDialog()
 {
   QString fileName = QFileDialog::getSaveFileName(
     this, tr("New File"), "",
@@ -131,12 +129,12 @@ void FileHandler::newFileDialog()
     )
   );
 
-  currentFile = fileName;
-  isFileOpened = true;
+  m_currentFileName = fileName;
+  m_isFileOpened = true;
   QFile file(fileName);
+  m_currentFileExtension = QFileInfo(file).suffix();
 
-  if (not file.open(QFile::WriteOnly | QFile::Text))
-  {
+  if (not file.open(QFile::WriteOnly | QFile::Text)) {
     QMessageBox::warning(
       this,
       "Warning",
@@ -145,37 +143,35 @@ void FileHandler::newFileDialog()
   }
 
   QTextStream stream(&file);
-  stream << plainTextEdit->toPlainText();
+  stream << m_plainTextEdit->toPlainText();
   file.close();
 }
 
 
 void FileHandler::newFile()
 {
-  if (not plainTextEdit->toPlainText().isEmpty())
-  {
-    showSavingMessageBox();
-    newFileDialog();
+  if (not m_plainTextEdit->toPlainText().isEmpty()) {
+    _showSavingMessageBox();
+    _newFileDialog();
   } else {
-    newFileDialog();
+    _newFileDialog();
   }
 }
 
 
-void FileHandler::closeFile(QWidget* parent)
+void FileHandler::closeFile()
 {
-  if (not plainTextEdit->toPlainText().isEmpty())
-  {
-    showSavingMessageBox();
-    parent->close();
-  } else {
-    parent->close();
+  if (not m_plainTextEdit->toPlainText().isEmpty()) {
+    _showSavingMessageBox();
+    if (m_isFileOpened) {
+      m_plainTextEdit->clear();
+      m_isFileOpened = false;
+    }
   }
-  isFileOpened = false;
 }
 
 
-void FileHandler::showSavingMessageBox()
+void FileHandler::_showSavingMessageBox()
 {
   auto choice = QMessageBox::question(
     this,
@@ -192,8 +188,8 @@ void FileHandler::showSavingMessageBox()
 
 QString FileHandler::whichFileOpened()
 {
-  if (not currentFile.isEmpty()) {
-    return currentFile;
+  if (not m_currentFileName.isEmpty()) {
+    return m_currentFileName;
   } else {
     return "";
   }
@@ -202,5 +198,5 @@ QString FileHandler::whichFileOpened()
 
 QString FileHandler::fileExtension()
 {
-  return currentFileExtension;
+  return m_currentFileExtension;
 }
