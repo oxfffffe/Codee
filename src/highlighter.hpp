@@ -8,8 +8,14 @@
 class Highlighter : public QSyntaxHighlighter
 {
 private:
-  void handleMultilineComment(const QString &text);
+  QVector<QString> m_cStyleCommentsLangs;
+  bool m_isCStyleComment = false;
   QString m_ext = "";
+
+  void _handleMultilineComment(const QString& text);
+  void _handleSingleLineComment(const QString& text);
+  void _initExtensions();
+
 public:
   explicit Highlighter(QTextDocument* parent = 0);
   void highlightBlock(const QString& text) override;

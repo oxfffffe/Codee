@@ -12,7 +12,7 @@
 #include "highlighter.hpp"
 #include "shortcuts.hpp"
 #include "linenumering.hpp"
-#include "filehandler.hpp" //QPlainTextEdit
+#include "filehandler.hpp"
 #include "settings.hpp"
 #include "shortcutswidget.hpp"
 
@@ -48,41 +48,24 @@ private:
   const int m_tabSize = 4;
         int m_fontSize = 15;
         int m_scaling = 0;
-  QString whichFileOpened;
-  QString m_extension;
+  QString   m_whichFileOpened;
+  QString   m_ext;
 
-  QString textUnderCursor() const;
-  QAbstractItemModel* modelFromFile(const QString& fileName);
-  void setupHighlighter();
-  void setupStyleSheets();
-  void setupFont(const QString&&);
-  void setupMenuBar();
-  void setupCompleter();
-  void updateFont();
+  QString _textUnderCursor() const;
+  QAbstractItemModel* _modelFromFile(const QString& fileName);
+  void _setupHighlighter();
+  void _setupStyleSheets();
+  void _setupFont(const QString&&);
+  void _setupMenuBar();
+  void _setupCompleter();
+  void _updateFont();
 
-  LineNumering* lineNumering;
-  FileHandler* fileHandler = new FileHandler(this);
-  Highlighter* highlighter = new Highlighter(this->document());
-  QCompleter *_completer = nullptr;
-  Shortcuts* shortcuts = new Shortcuts(this, fileHandler, &m_fontSize, &m_scaling);
-
+  LineNumering* m_lineNumering;
+  FileHandler*  m_fileHandler = new FileHandler(this);
+  Highlighter*  m_highlighter = new Highlighter(this->document());
+  QCompleter*   m_completer = nullptr;
+  Shortcuts*    m_shortcuts = new Shortcuts(this, m_fileHandler, &m_fontSize, &m_scaling);
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

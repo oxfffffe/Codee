@@ -2,10 +2,57 @@
 
 Highlighter::Highlighter(QTextDocument *parent)
   : QSyntaxHighlighter(parent)
-{ }
+{
+  _initExtensions();
+}
 
 
-void Highlighter::handleMultilineComment(const QString& text)
+void Highlighter::_initExtensions()
+{
+  m_cStyleCommentsLangs = {
+    "c",      // C/C++
+    "h",      // C/C++/Objective-C
+    "cpp",    // C++
+    "hpp",    // C++
+    "cxx",    // C++
+    "hxx",    // C++
+    "cc",     // C++
+    "hh",     // C++
+    "c++",    // C++
+    "h++",    // C++
+    "cs",     // C#
+    "java",   // Java
+    "js",     // JavaScript
+    "kt",     // Kotlin
+    "kts",    // Kotlin
+    "m",      // Objective-C
+    "php",    // PHP
+    "rs",     // Rust
+    "scala",  // Scala
+    "sc",     // Scala
+    "swift"   // Swift
+  };
+}
+
+
+void Highlighter::_handleSingleLineComment(const QString& text)
+{
+  setCurrentBlockState(0);
+
+  int start = 0;
+  int end   = 0;
+  if (previousBlockState() != 1) {
+    start = text.indexOf(QRegularExpression("\\/\\/"));
+    end   = text.indexOf(QRegularExpression("$"));
+  }
+
+  if (start != -1) {
+    setFormat(start, end, multiLineCommentFormat);
+  }
+}
+
+
+void Highlighter::_handleMultilineComment(const QString& text)
 {
   setCurrentBlockState(0);
 
@@ -32,46 +79,45 @@ void Highlighter::handleMultilineComment(const QString& text)
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    for (const HighlightingRule &rule : qAsConst(highlightingRules)) {
-        QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
-        while (matchIterator.hasNext()) {
-            QRegularExpressionMatch match = matchIterator.next();
-            setFormat(match.capturedStart(), match.capturedLength(), rule.format);
-        }
-    }
-    if (m_ext == "c"   or
-        m_ext == "h"   or
-        m_ext == "cpp" or
-        m_ext == "hpp" or
-        m_ext == "cxx" or
-        m_ext == "hxx" or
-        m_ext == "cc"  or
-        m_ext == "hh")
-    {
-      handleMultilineComment(text);
-    }
+  for (const HighlightingRule &rule : qAsConst(highlightingRules)) {
+    QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
+      while (matchIterator.hasNext()) {
+        QRegularExpressionMatch match = matchIterator.next();
+        setFormat(match.capturedStart(), match.capturedLength(), rule.format);
+      }
+  }
+
+  if (m_isCStyleComment) {
+    _handleSingleLineComment(text);
+    _handleMultilineComment(text);
+  }
 }
-
-
 
 
 void Highlighter::highlight(const QString& ext)
 {
-  qDebug() << "inside highlighter body:" << ext;
-  if (ext == "c"   or
-      ext == "h"   or
-      ext == "cpp" or
+  m_ext = ext;
+  for (const auto& _ext : qAsConst(m_cStyleCommentsLangs)) {
+    if (ext == _ext) {
+      multiLineCommentFormat.setForeground(QColor(30, 30, 30));
+      m_isCStyleComment = true;
+      break;
+    }
+  }
+
+  if (ext == "cpp" or
       ext == "hpp" or
+      ext == "cc"  or
+      ext == "hh"  or
       ext == "cxx" or
       ext == "hxx" or
-      ext == "cc"  or
-      ext == "hh")
+      ext == "c++" or
+      ext == "h++" or
+      ext == "c"   or
+      ext == "h")
   {
-    m_ext = ext;
     HighlightingRule rule;
     keywordFormat.setForeground(QColor(230, 60, 50));
-
-    multiLineCommentFormat.setForeground(QColor("#303030"));
 
     QFile keywords(":/resources/cppKeywords.txt");
     if (not keywords.open(QFile::ReadOnly)) {

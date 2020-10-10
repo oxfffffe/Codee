@@ -3,32 +3,32 @@
 
 void CodeEditor::setCompleter(QCompleter* completer)
 {
-  if (_completer) {
-    _completer->disconnect(this);
+  if (m_completer) {
+    m_completer->disconnect(this);
   }
 
-  _completer = completer;
+  m_completer = completer;
 
-  if (not _completer) {
+  if (not m_completer) {
     return;
   }
 
-  _completer->setWidget(this);
-  _completer->setCompletionMode(QCompleter::PopupCompletion);
-  _completer->setCaseSensitivity(Qt::CaseSensitive);
-  connect(_completer, QOverload<const QString &>::of(&QCompleter::activated),
+  m_completer->setWidget(this);
+  m_completer->setCompletionMode(QCompleter::PopupCompletion);
+  m_completer->setCaseSensitivity(Qt::CaseSensitive);
+  connect(m_completer, QOverload<const QString &>::of(&QCompleter::activated),
      this, &CodeEditor::insertCompletion);
 }
 
 
 void CodeEditor::insertCompletion(const QString &completion)
 {
-  if (_completer->widget() != this) {
+  if (m_completer->widget() != this) {
     return;
   }
 
   QTextCursor cursor = textCursor();
-  int rest = completion.length() - _completer->completionPrefix().length();
+  int rest = completion.length() - m_completer->completionPrefix().length();
   cursor.movePosition(QTextCursor::Left);
   cursor.movePosition(QTextCursor::EndOfWord);
   cursor.insertText(completion.right(rest));
@@ -36,7 +36,7 @@ void CodeEditor::insertCompletion(const QString &completion)
 }
 
 
-QString CodeEditor::textUnderCursor() const
+QString CodeEditor::_textUnderCursor() const
 {
   QTextCursor cursor = textCursor();
   cursor.select(QTextCursor::WordUnderCursor);
@@ -46,8 +46,8 @@ QString CodeEditor::textUnderCursor() const
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
-  if (_completer &&
-      _completer->popup()->isVisible())
+  if (m_completer &&
+      m_completer->popup()->isVisible())
   {
     switch (event->key()) {
       case Qt::Key_Enter:
@@ -65,7 +65,7 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
   const bool isShortcut = (event->modifiers().testFlag(Qt::ControlModifier) and
                            event->key() == Qt::Key_E);
 
-  if (not _completer or not isShortcut) {
+  if (not m_completer or not isShortcut) {
     QPlainTextEdit::keyPressEvent(event);
   }
 
@@ -73,49 +73,49 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
       event->modifiers().testFlag(Qt::ControlModifier) or
       event->modifiers().testFlag(Qt::ShiftModifier);
 
-  static QString eow("~!@$%^&*+|:\"?,./;'\\-=");
+//  static QString eow("~!@$%^&*+|:\"?,./;'\\-=");
 
   const bool hasModifier = (event->modifiers() != Qt::NoModifier) and not ctrlOrShift;
-  QString completionPrefix = textUnderCursor();
+  QString completionPrefix = _textUnderCursor();
   if (not isShortcut and
      (hasModifier or
       event->text().isEmpty() or
       completionPrefix.length() < 3))
   {
-    _completer->popup()->hide();
+    m_completer->popup()->hide();
     return;
   }
 
-  if (completionPrefix != _completer->completionPrefix())
+  if (completionPrefix != m_completer->completionPrefix())
   {
-    _completer->setCompletionPrefix(completionPrefix);
-    _completer->popup()->setCurrentIndex(_completer->completionModel()->index(0, 0));
+    m_completer->setCompletionPrefix(completionPrefix);
+    m_completer->popup()->setCurrentIndex(m_completer->completionModel()->index(0, 0));
   }
 
   QRect cr = cursorRect();
   const int completingRectWidth = 110;
   cr.setWidth( //magic of completion window moving
-    _completer->popup()->sizeHintForColumn(0) +
-    _completer->popup()->verticalScrollBar()->
+    m_completer->popup()->sizeHintForColumn(0) +
+    m_completer->popup()->verticalScrollBar()->
     sizeHint().width() +
         (completingRectWidth -
-         _completer->popup()->sizeHintForColumn(0) +
+         m_completer->popup()->sizeHintForColumn(0) +
          m_scaling)
   );
-  cr.setHeight(_completer->
+  cr.setHeight(m_completer->
                popup()->
                verticalScrollBar()->
                sizeHint().height() +
                m_fontSize);
-  _completer->complete(cr);
+  m_completer->complete(cr);
 }
 
 
-QAbstractItemModel* CodeEditor::modelFromFile(const QString& fileName)
+QAbstractItemModel* CodeEditor::_modelFromFile(const QString& fileName)
 {
   QFile file(fileName);
   if (not file.open(QFile::ReadOnly)) {
-    return new QStringListModel(_completer);
+    return new QStringListModel(m_completer);
   }
 
   QStringList words;
@@ -126,5 +126,5 @@ QAbstractItemModel* CodeEditor::modelFromFile(const QString& fileName)
     }
   }
 
-  return new QStringListModel(words, _completer);
+  return new QStringListModel(words, m_completer);
 }

@@ -11,11 +11,11 @@ void Settings::setSettings()
 
   m_parent->m_fontSize = settings.value("fontSize").value<int>();
 
-  m_parent->m_extension = settings.value("ext").value<QString>();
+  m_parent->m_ext = settings.value("ext").value<QString>();
 
-  m_parent->whichFileOpened = settings.value("openedFile").value<QString>();
-  if (not m_parent->whichFileOpened.isEmpty()) {
-    m_parent->fileHandler->openFile(m_parent->whichFileOpened);
+  m_parent->m_whichFileOpened = settings.value("openedFile").value<QString>();
+  if (not m_parent->m_whichFileOpened.isEmpty()) {
+    m_parent->m_fileHandler->openFile(m_parent->m_whichFileOpened);
   }
 }
 
@@ -37,12 +37,12 @@ void Settings::getSettings()
   );
 
   settings.setValue(
-    "ext", m_parent->m_extension
+    "ext", m_parent->m_ext
   );
 
-  if (not m_parent->fileHandler->whichFileOpened().isEmpty()) {
+  if (not m_parent->m_fileHandler->whichFileOpened().isEmpty()) {
     settings.setValue(
-      "openedFile", m_parent->fileHandler->whichFileOpened()
+      "openedFile", m_parent->m_fileHandler->whichFileOpened()
     );
   }
 }

@@ -1,5 +1,5 @@
 #include "shortcuts.hpp"
-# include "codeeditor.hpp"
+#include "codeeditor.hpp"
 
 Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSize, int* pScaling)
 {
@@ -38,9 +38,9 @@ Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSiz
   openFile->setKey(Qt::CTRL + Qt::Key_O);
 
   connect(openFile, &QShortcut::activated, [=]() {
-    parent->highlighter->dehighlight();
-    parent->m_extension = fileHandler->fileExtension();
-    parent->highlighter->highlight(parent->m_extension);
+    parent->m_highlighter->dehighlight();
+    parent->m_ext = fileHandler->fileExtension();
+    parent->m_highlighter->highlight(parent->m_ext);
     fileHandler->openFile();
   });
 
@@ -49,9 +49,9 @@ Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSiz
 
   connect(saveFile, &QShortcut::activated, [=]() {
     fileHandler->saveFile();
-    parent->highlighter->dehighlight();
-    parent->m_extension = fileHandler->fileExtension();
-    parent->highlighter->highlight(parent->m_extension);
+    parent->m_highlighter->dehighlight();
+    parent->m_ext = fileHandler->fileExtension();
+    parent->m_highlighter->highlight(parent->m_ext);
   });
 
   newFile = new QShortcut(parent);
@@ -59,9 +59,9 @@ Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSiz
 
   connect(newFile, &QShortcut::activated, [=]() {
     fileHandler->newFile();
-    parent->highlighter->dehighlight();
-    parent->m_extension = fileHandler->fileExtension();
-    parent->highlighter->highlight(parent->m_extension);
+    parent->m_highlighter->dehighlight();
+    parent->m_ext = fileHandler->fileExtension();
+    parent->m_highlighter->highlight(parent->m_ext);
   });
 
   closeFile = new QShortcut(parent);
@@ -69,7 +69,7 @@ Shortcuts::Shortcuts(CodeEditor* parent, FileHandler* fileHandler, int* pFontSiz
 
   connect(closeFile, &QShortcut::activated, [=]() {
     fileHandler->closeFile();
-    parent->m_extension = "";
+    parent->m_ext = "";
     parent->close();
   });
 
